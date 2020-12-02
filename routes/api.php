@@ -20,8 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/weather' , function(){
+    $query = Request('query');
+
     $key= config('services.weatherStack.key');
-    $res = Http::get("http://api.weatherstack.com/forecast?access_key=${key}&query=New%20York");
+    $res = Http::get("http://api.weatherstack.com/forecast?access_key=${key}&query=${query}");
     return $res->json();
 });
 

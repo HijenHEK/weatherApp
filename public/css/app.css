@@ -10919,10 +10919,11 @@ body {
   width: 600px;
   max-width: 80%;
   min-width: 400px;
-  background-color: rgba(34, 34, 34, 0.95);
+  background-color: rgba(34, 34, 34, 0.85);
   color: white;
   font-size: 1rem;
   border-radius: 1rem;
+  margin-top: 5rem;
 }
 
 .weather-container .weather-card .header {
@@ -10936,6 +10937,10 @@ body {
 .weather-container .weather-card .header .status {
   font-size: 2rem;
   font-weight: 500;
+}
+
+.weather-container .weather-card .header .status small {
+  font-size: 1rem;
 }
 
 .weather-container .weather-card .header .status .desc {

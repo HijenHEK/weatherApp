@@ -6,8 +6,9 @@
                 <div class="header">
                     <div class="status">
                         <div class="temp">
-                            {{current.temp}} °C
+                            {{current.temp}} °C <small>  at {{ current.obs }} </small>
                         </div>
+                        
                         <div class="desc">
                             <div v-for="desc in current.desc" :key="desc.index">
                                 {{desc}}
@@ -17,10 +18,10 @@
                     
                     <div class="data">
                     <div class="city">
-                            Gafsa, Tunisia
+                            {{location.region}} , {{location.country}}
                     </div>
                     <div class="date">
-                        Wed , 2 dec 2020
+                        {{location.localtime | moment("ddd , MMM Do") }}
                     </div>
                     </div>
                     
@@ -40,48 +41,7 @@
                         </div>
                         <div class="icon">icon</div>
                     </div>
-                                        <div class="forecast">
-                        <div class="day">
-                            Thu
-                        </div>
-                        <div class="status">
-                            <span class="temp">
-                                20°C
-                            </span>
-                            <span class="desc">
-                                Rainy
-                            </span>
-                        </div>
-                        <div class="icon">icon</div>
-                    </div>
-                                        <div class="forecast">
-                        <div class="day">
-                            Thu
-                        </div>
-                        <div class="status">
-                            <span class="temp">
-                                20°C
-                            </span>
-                            <span class="desc">
-                                Rainy
-                            </span>
-                        </div>
-                        <div class="icon">icon</div>
-                    </div>
-                                        <div class="forecast">
-                        <div class="day">
-                            Thu
-                        </div>
-                        <div class="status">
-                            <span class="temp">
-                                20°C
-                            </span>
-                            <span class="desc">
-                                Rainy
-                            </span>
-                        </div>
-                        <div class="icon">icon</div>
-                    </div>
+                                       
                 </div>
             </div>
     </div>
@@ -95,23 +55,26 @@
         },
         data () {
             return {
-                bg : "./img/bg1.jpg",
+                bg : "",
+                location : {},
                 current : {},
             }
         },
         methods : {
             async fetchData() {
-                var response = await fetch(`/api/weather`)
+                var response = await fetch(`/api/weather?query=${this.location.name || 'Tunisia'}`)
                 var data = await response.json()
                 this.current = {
                     temp : data.current.temperature ,
                     desc : data.current.weather_descriptions ,
+                    obs : data.current.observation_time 
                 }
+                this.location = data.location ,
                 
                 this.fetchBg()
             },
             async fetchBg() {
-                var response = await fetch(`/api/unsplash?query=${this.current.desc[0]} `)
+                var response = await fetch(`/api/unsplash?query=${this.current.desc[0] || 'nature'} `)
                 var data = await response.json()
                 data = data.filter(i=> {
                     if(i.width > i.height)
@@ -122,10 +85,11 @@
         },
         computed : {
             background() {
-                return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('"+this.bg+"') ; background-size : cover ; background-position : center ;  "
+                return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('"+this.bg+"') ; background-size : cover ; background-position : center top ;  "
             }
         },
         created() {
+
             this.fetchData()
         }
     }
