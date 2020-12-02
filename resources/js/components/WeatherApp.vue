@@ -1,6 +1,7 @@
 <template>
     <div class="weather-container pt-5" :style="background">
-    
+            <input type="search" id="address-input" placeholder="Where are we going?" />
+            <div id="address-value"></div>
             <div class="weather-card">
                 
                 <div class="header">
@@ -48,21 +49,21 @@
 </template>
 
 <script>
-     
+     var places = require('places.js');
+
     export default {
-        mounted() {
-            console.log('Component mounted.')
-        },
+        
         data () {
             return {
                 bg : "",
+                city : '',
                 location : {},
                 current : {},
             }
         },
         methods : {
             async fetchData() {
-                var response = await fetch(`/api/weather?query=${this.location.name || 'Tunisia'}`)
+                var response = await fetch(`/api/weather?query=${this.city || 'Tunisia , Gafsa'}`)
                 var data = await response.json()
                 this.current = {
                     temp : data.current.temperature ,
@@ -81,6 +82,11 @@
                     {return i}                    
                 });
                 this.bg = data[0].urls.raw
+            },
+            changeCity(city) {
+                this.city = city
+                this.fetchData()
+
             }
         },
         computed : {
@@ -88,9 +94,26 @@
                 return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('"+this.bg+"') ; background-size : cover ; background-position : center top ;  "
             }
         },
-        created() {
+        
+        mounted() {
+            var placesAutocomplete = places({
+                appId: 'pl286R2G2FD6' ,
+                apiKey: '3b6ce17440c6809a69b5a357d8779675' ,
+                container: document.querySelector('#address-input')
+                
+                }).configure({
+                    type: 'city',
+                    aroundLatLngViaIP: false,
+            });
+            placesAutocomplete.on('change', (e) => {
+                this.changeCity(e.suggestion.value)
+            });
+            
 
             this.fetchData()
+
+            
+
         }
     }
 </script>
