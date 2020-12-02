@@ -6,12 +6,15 @@
                 <div class="header">
                     <div class="status">
                         <div class="temp">
-                            15°C
+                            {{current.temp}} °C
                         </div>
                         <div class="desc">
-                            Cloudy
+                            <div v-for="desc in current.desc" :key="desc.index">
+                                {{desc}}
+                            </div>
                         </div>
                     </div>
+                    
                     <div class="data">
                     <div class="city">
                             Gafsa, Tunisia
@@ -92,19 +95,34 @@
         },
         data () {
             return {
-                bg : './img/bg1.jpg'
+                bg : "./img/bg1.jpg",
+                current : {},
             }
         },
         methods : {
-            fetchData() {
-                fetch(`/api/weather`)
-                    .then(response => response.json())
-                    .then(data => console.log(data))
+            async fetchData() {
+                var response = await fetch(`/api/weather`)
+                var data = await response.json()
+                this.current = {
+                    temp : data.current.temperature ,
+                    desc : data.current.weather_descriptions ,
+                }
+                
+                this.fetchBg()
+            },
+            async fetchBg() {
+                var response = await fetch(`/api/unsplash?query=${this.current.desc[0]} `)
+                var data = await response.json()
+                data = data.filter(i=> {
+                    if(i.width > i.height)
+                    {return i}                    
+                });
+                this.bg = data[0].urls.raw
             }
         },
         computed : {
             background() {
-                return "background : linear-gradient(160deg, #0093E985 0%, #80D0C785 100%) ,url('"+this.bg+"') ";
+                return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('"+this.bg+"') ; background-size : cover ; background-position : center ;  "
             }
         },
         created() {

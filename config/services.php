@@ -33,6 +33,9 @@ return [
         'key' => env('WEATHER_STACK_ACCESS_KEY'),
         
     ],
-
+    'unsplash' => [
+        'key' => env('UNSPLASH_ACCESS_KEY'),
+        
+    ],
 
 ];
