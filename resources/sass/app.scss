@@ -1,0 +1,65 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+body {
+    overflow: hidden;
+}
+.weather-container {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    .weather-card {
+        width: 600px;
+        max-width: 80%;
+        min-width: 400px;
+        background-color: rgba(34, 34, 34, 0.95);
+        color: white;
+        font-size: 1rem;
+        border-radius: 1rem;
+        
+        .header {
+            font-size: 1.2rem;
+            display: flex;
+            padding: 1rem 2rem;
+            justify-content: space-between;
+            align-items: center;
+            .status {
+                font-size: 2rem;
+                font-weight: 500;
+                .desc {
+                    font-size: 1.5rem;
+                }   
+            }
+            
+        }
+        .body {
+            background-color: rgba(61, 61, 61, 0.1);
+            border-radius: inherit;
+            .forecast {
+                
+                display: flex;
+                padding: 1rem 2rem;
+                justify-content: space-between;
+                .day {
+                    flex-basis: 15%;
+                }
+                .status {
+                    flex-basis: 70%;
+                }
+                .icon {
+                    flex-basis: 15%;
+                    text-align: end;
+                }
+            }
+        }
+        
+    }
+}
