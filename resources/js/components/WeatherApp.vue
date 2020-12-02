@@ -75,13 +75,15 @@
                 this.fetchBg()
             },
             async fetchBg() {
-                var response = await fetch(`/api/unsplash?query=${this.current.desc[0] || 'nature'} `)
+                var query = this.current.desc[0] + ' ' + this.city
+                query = query.replace(/ /g, "%20")
+                var response = await fetch(`/api/unsplash?query=${ query || 'nature'} `)
                 var data = await response.json()
                 data = data.filter(i=> {
                     if(i.width > i.height)
                     {return i}                    
                 });
-                this.bg = data[0].urls.raw
+                this.bg = data[0].urls.raw || data[0].urls.regular 
             },
             changeCity(city) {
                 this.city = city

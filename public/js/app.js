@@ -8594,29 +8594,31 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var response, data;
+        var query, response, data;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
-                return fetch("/api/unsplash?query=".concat(_this2.current.desc[0] || 'nature', " "));
+                query = _this2.current.desc[0] + ' ' + _this2.city;
+                query = query.replace(/ /g, "%20");
+                _context2.next = 4;
+                return fetch("/api/unsplash?query=".concat(query || 'nature', " "));
 
-              case 2:
+              case 4:
                 response = _context2.sent;
-                _context2.next = 5;
+                _context2.next = 7;
                 return response.json();
 
-              case 5:
+              case 7:
                 data = _context2.sent;
                 data = data.filter(function (i) {
                   if (i.width > i.height) {
                     return i;
                   }
                 });
-                _this2.bg = data[0].urls.raw;
+                _this2.bg = data[0].urls.raw || data[0].urls.regular;
 
-              case 8:
+              case 10:
               case "end":
                 return _context2.stop();
             }
