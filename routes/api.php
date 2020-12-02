@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,3 +18,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/weather' , function(){
+    $key= config('services.weatherStack.key');
+    $res = Http::get("http://api.weatherstack.com/forecast?access_key=${key}&query=New%20York");
+    return $res->json();
+});
+

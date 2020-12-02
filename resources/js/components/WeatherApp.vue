@@ -85,6 +85,7 @@
 </template>
 
 <script>
+     
     export default {
         mounted() {
             console.log('Component mounted.')
@@ -94,10 +95,20 @@
                 bg : './img/bg1.jpg'
             }
         },
+        methods : {
+            fetchData() {
+                fetch(`/api/weather`)
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+            }
+        },
         computed : {
             background() {
                 return "background : linear-gradient(160deg, #0093E985 0%, #80D0C785 100%) ,url('"+this.bg+"') ";
             }
+        },
+        created() {
+            this.fetchData()
         }
     }
 </script>

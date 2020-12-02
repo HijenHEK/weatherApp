@@ -2003,10 +2003,22 @@ __webpack_require__.r(__webpack_exports__);
       bg: './img/bg1.jpg'
     };
   },
+  methods: {
+    fetchData: function fetchData() {
+      fetch("/api/weather").then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        return console.log(data);
+      });
+    }
+  },
   computed: {
     background: function background() {
       return "background : linear-gradient(160deg, #0093E985 0%, #80D0C785 100%) ,url('" + this.bg + "') ";
     }
+  },
+  created: function created() {
+    this.fetchData();
   }
 });
 
@@ -49983,15 +49995,14 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!************************************************!*\
   !*** ./resources/js/components/WeatherApp.vue ***!
   \************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _WeatherApp_vue_vue_type_template_id_385e73b8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WeatherApp.vue?vue&type=template&id=385e73b8& */ "./resources/js/components/WeatherApp.vue?vue&type=template&id=385e73b8&");
 /* harmony import */ var _WeatherApp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WeatherApp.vue?vue&type=script&lang=js& */ "./resources/js/components/WeatherApp.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _WeatherApp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _WeatherApp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -50021,7 +50032,7 @@ component.options.__file = "resources/js/components/WeatherApp.vue"
 /*!*************************************************************************!*\
   !*** ./resources/js/components/WeatherApp.vue?vue&type=script&lang=js& ***!
   \*************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
