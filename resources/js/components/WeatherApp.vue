@@ -56,34 +56,43 @@
         data () {
             return {
                 bg : "",
-                city : '',
+                city : 'Gafsa',
                 location : {},
                 current : {},
             }
         },
         methods : {
             async fetchData() {
-                var response = await fetch(`/api/weather?query=${this.city || 'Tunisia , Gafsa'}`)
-                var data = await response.json()
+                
+                let response = await fetch(`/api/weather?query=${this.city || 'Tunisia'}`)
+                let data = await response.json()
+                console.log(data)
                 this.current = {
                     temp : data.current.temperature ,
                     desc : data.current.weather_descriptions ,
                     obs : data.current.observation_time 
                 }
-                this.location = data.location ,
-                
                 this.fetchBg()
+                this.location = data.location 
+                
+                
+
             },
             async fetchBg() {
-                var query = this.current.desc[0] + ' ' + this.city
+                
+                let query = (this.city +' ' +this.current.desc[0]) || 'nature'
                 query = query.replace(/ /g, "%20")
-                var response = await fetch(`/api/unsplash?query=${ query || 'nature'} `)
-                var data = await response.json()
-                data = data.filter(i=> {
-                    if(i.width > i.height)
-                    {return i}                    
-                });
-                this.bg = data[0].urls.raw || data[0].urls.regular 
+                console.log(query)
+                const response = await fetch(`/api/unsplash?query=${query}`)
+                
+                const data = await response.json()
+                console.log(data)
+                // data = data.filter(i=> {
+                //     if(i.width > i.height)
+                //     {return i}                    
+                // });
+                this.bg = data.regular || data.raw
+                console.log(this.bg)
             },
             changeCity(city) {
                 this.city = city
@@ -108,7 +117,7 @@
                     aroundLatLngViaIP: false,
             });
             placesAutocomplete.on('change', (e) => {
-                this.changeCity(e.suggestion.value)
+                this.changeCity(e.suggestion.name)
             });
             
 

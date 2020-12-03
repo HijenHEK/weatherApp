@@ -30,6 +30,9 @@ Route::get('/weather' , function(){
 Route::get('/unsplash' , function(){
     $key= config('services.unsplash.key');
     $query = Request('query');
-    $res = Http::get("https://api.unsplash.com/search/photos?page=1&query=${query}%20%nature&client_id=${key}");
-    return $res['results'];
+    $res = Http::get("https://api.unsplash.com/search/photos?page=1&query=${query}&auto=compress&client_id=${key}");
+    $res = $res->json();
+    return $res['results'][0]['urls'];
 });
+
+

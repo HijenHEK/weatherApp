@@ -8550,7 +8550,7 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
   data: function data() {
     return {
       bg: "",
-      city: '',
+      city: 'Gafsa',
       location: {},
       current: {}
     };
@@ -8566,7 +8566,7 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return fetch("/api/weather?query=".concat(_this.city || 'Tunisia , Gafsa'));
+                return fetch("/api/weather?query=".concat(_this.city || 'Tunisia'));
 
               case 2:
                 response = _context.sent;
@@ -8575,14 +8575,18 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
 
               case 5:
                 data = _context.sent;
+                console.log(data);
                 _this.current = {
                   temp: data.current.temperature,
                   desc: data.current.weather_descriptions,
                   obs: data.current.observation_time
                 };
-                _this.location = data.location, _this.fetchBg();
 
-              case 8:
+                _this.fetchBg();
+
+                _this.location = data.location;
+
+              case 10:
               case "end":
                 return _context.stop();
             }
@@ -8599,26 +8603,28 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                query = _this2.current.desc[0] + ' ' + _this2.city;
+                query = _this2.city + ' ' + _this2.current.desc[0] || 'nature';
                 query = query.replace(/ /g, "%20");
-                _context2.next = 4;
-                return fetch("/api/unsplash?query=".concat(query || 'nature', " "));
+                console.log(query);
+                _context2.next = 5;
+                return fetch("/api/unsplash?query=".concat(query));
 
-              case 4:
+              case 5:
                 response = _context2.sent;
-                _context2.next = 7;
+                _context2.next = 8;
                 return response.json();
 
-              case 7:
+              case 8:
                 data = _context2.sent;
-                data = data.filter(function (i) {
-                  if (i.width > i.height) {
-                    return i;
-                  }
-                });
-                _this2.bg = data[0].urls.raw || data[0].urls.regular;
+                console.log(data); // data = data.filter(i=> {
+                //     if(i.width > i.height)
+                //     {return i}                    
+                // });
 
-              case 10:
+                _this2.bg = data.regular || data.raw;
+                console.log(_this2.bg);
+
+              case 12:
               case "end":
                 return _context2.stop();
             }
@@ -8648,7 +8654,7 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
       aroundLatLngViaIP: false
     });
     placesAutocomplete.on('change', function (e) {
-      _this3.changeCity(e.suggestion.value);
+      _this3.changeCity(e.suggestion.name);
     });
     this.fetchData();
   }
