@@ -8550,13 +8550,21 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
   data: function data() {
     return {
       bg: "",
-      city: 'Gafsa',
-      location: {},
-      current: {}
+      location: {
+        country: '',
+        city: '',
+        date: '',
+        bg: ''
+      },
+      weather: {
+        temp: '',
+        desc: '',
+        obs: ''
+      }
     };
   },
   methods: {
-    fetchData: function fetchData() {
+    fetchData: function fetchData(city) {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
@@ -8566,7 +8574,7 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return fetch("/api/weather?query=".concat(_this.city || 'Tunisia'));
+                return fetch("/api/weather?query=".concat(city || 'Tunisia'));
 
               case 2:
                 response = _context.sent;
@@ -8575,18 +8583,27 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
 
               case 5:
                 data = _context.sent;
-                console.log(data);
-                _this.current = {
+                _this.weather = {
                   temp: data.current.temperature,
                   desc: data.current.weather_descriptions,
                   obs: data.current.observation_time
                 };
+                _context.t0 = data.location.country;
+                _context.t1 = data.location.name;
+                _context.t2 = data.location.localtime;
+                _context.next = 12;
+                return _this.fetchBg(_this.location.city, _this.weather.desc[0]);
 
-                _this.fetchBg();
+              case 12:
+                _context.t3 = _context.sent;
+                _this.location = {
+                  country: _context.t0,
+                  city: _context.t1,
+                  date: _context.t2,
+                  bg: _context.t3
+                };
 
-                _this.location = data.location;
-
-              case 10:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -8594,37 +8611,27 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
         }, _callee);
       }))();
     },
-    fetchBg: function fetchBg() {
-      var _this2 = this;
-
+    fetchBg: function fetchBg(city, desc) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         var query, response, data;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                query = _this2.city + ' ' + _this2.current.desc[0] || 'nature';
-                query = query.replace(/ /g, "%20");
-                console.log(query);
-                _context2.next = 5;
+                query = city + ' ' + desc;
+                _context2.next = 3;
                 return fetch("/api/unsplash?query=".concat(query));
 
-              case 5:
+              case 3:
                 response = _context2.sent;
-                _context2.next = 8;
+                _context2.next = 6;
                 return response.json();
 
-              case 8:
+              case 6:
                 data = _context2.sent;
-                console.log(data); // data = data.filter(i=> {
-                //     if(i.width > i.height)
-                //     {return i}                    
-                // });
+                return _context2.abrupt("return", data.regular || data.raw);
 
-                _this2.bg = data.regular || data.raw;
-                console.log(_this2.bg);
-
-              case 12:
+              case 8:
               case "end":
                 return _context2.stop();
             }
@@ -8632,19 +8639,30 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
         }, _callee2);
       }))();
     },
-    changeCity: function changeCity(city) {
-      this.city = city;
-      this.fetchData();
+    myLocation: function myLocation() {
+      var _this2 = this;
+
+      fetch('https://ipapi.co/json/').then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        _this2.location = {
+          country: data.country_name,
+          city: data.city,
+          date: Date.now()
+        };
+      });
     }
   },
   computed: {
     background: function background() {
-      return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('" + this.bg + "') ; background-size : cover ; background-position : center top ;  ";
+      return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('".concat(this.location.bg || './img/bg1.jpg', "') ; background-size : cover ; background-position : center top ;  ");
     }
   },
   mounted: function mounted() {
     var _this3 = this;
 
+    this.myLocation();
+    this.fetchData(this.location.city);
     var placesAutocomplete = places({
       appId: 'pl286R2G2FD6',
       apiKey: '3b6ce17440c6809a69b5a357d8779675',
@@ -8654,9 +8672,8 @@ var places = __webpack_require__(/*! places.js */ "./node_modules/places.js/inde
       aroundLatLngViaIP: false
     });
     placesAutocomplete.on('change', function (e) {
-      _this3.changeCity(e.suggestion.name);
+      _this3.fetchData(e.suggestion.name);
     });
-    this.fetchData();
   }
 });
 
@@ -48956,15 +48973,15 @@ var render = function() {
           _c("div", { staticClass: "status" }, [
             _c("div", { staticClass: "temp" }, [
               _vm._v(
-                "\n                        " + _vm._s(_vm.current.temp) + " °C "
+                "\n                        " + _vm._s(_vm.weather.temp) + " °C "
               ),
-              _c("small", [_vm._v("  at " + _vm._s(_vm.current.obs) + " ")])
+              _c("small", [_vm._v("  at " + _vm._s(_vm.weather.obs) + " ")])
             ]),
             _vm._v(" "),
             _c(
               "div",
               { staticClass: "desc" },
-              _vm._l(_vm.current.desc, function(desc) {
+              _vm._l(_vm.weather.desc, function(desc) {
                 return _c("div", { key: desc.index }, [
                   _vm._v(
                     "\n                            " +
@@ -48981,7 +48998,7 @@ var render = function() {
             _c("div", { staticClass: "city" }, [
               _vm._v(
                 "\n                        " +
-                  _vm._s(_vm.location.region) +
+                  _vm._s(_vm.location.city) +
                   " , " +
                   _vm._s(_vm.location.country) +
                   "\n                "
@@ -48991,9 +49008,7 @@ var render = function() {
             _c("div", { staticClass: "date" }, [
               _vm._v(
                 "\n                    " +
-                  _vm._s(
-                    _vm._f("moment")(_vm.location.localtime, "ddd , MMM Do")
-                  ) +
+                  _vm._s(_vm._f("moment")(_vm.location.date, "ddd , MMM Do")) +
                   "\n                "
               )
             ])

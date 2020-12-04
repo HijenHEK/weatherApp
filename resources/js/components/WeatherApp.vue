@@ -7,11 +7,11 @@
                 <div class="header">
                     <div class="status">
                         <div class="temp">
-                            {{current.temp}} °C <small>  at {{ current.obs }} </small>
+                            {{weather.temp}} °C <small>  at {{ weather.obs }} </small>
                         </div>
                         
                         <div class="desc">
-                            <div v-for="desc in current.desc" :key="desc.index">
+                            <div v-for="desc in weather.desc" :key="desc.index">
                                 {{desc}}
                             </div>
                         </div>
@@ -19,10 +19,10 @@
                     
                     <div class="data">
                     <div class="city">
-                            {{location.region}} , {{location.country}}
+                            {{location.city}} , {{location.country}}
                     </div>
                     <div class="date">
-                        {{location.localtime | moment("ddd , MMM Do") }}
+                        {{location.date | moment("ddd , MMM Do") }}
                     </div>
                     </div>
                     
@@ -56,57 +56,79 @@
         data () {
             return {
                 bg : "",
-                city : 'Gafsa',
-                location : {},
-                current : {},
+                location : {
+                    country : '' ,
+                    city :  '' ,
+                    date : '' ,
+                    bg : ''
+                },
+                weather : {
+                    temp : '',
+                    desc : '',
+                    obs  : '' ,
+                },
             }
         },
         methods : {
-            async fetchData() {
+            async fetchData(city) {
                 
-                let response = await fetch(`/api/weather?query=${this.city || 'Tunisia'}`)
+                let response = await fetch(`/api/weather?query=${city || 'Tunisia'}`)
                 let data = await response.json()
-                console.log(data)
-                this.current = {
+                this.weather = {
                     temp : data.current.temperature ,
                     desc : data.current.weather_descriptions ,
                     obs : data.current.observation_time 
                 }
-                this.fetchBg()
-                this.location = data.location 
+                this.location = {
+                        country : data.location.country ,
+                        city :  data.location.name ,
+                        date : data.location.localtime ,
+                        bg : await this.fetchBg(this.location.city , this.weather.desc[0])
+                    }
+                
                 
                 
 
             },
-            async fetchBg() {
+            async fetchBg(city , desc) {
                 
-                let query = (this.city +' ' +this.current.desc[0]) || 'nature'
-                query = query.replace(/ /g, "%20")
-                console.log(query)
+                let query = (city +' ' +desc)
                 const response = await fetch(`/api/unsplash?query=${query}`)
-                
                 const data = await response.json()
-                console.log(data)
-                // data = data.filter(i=> {
-                //     if(i.width > i.height)
-                //     {return i}                    
-                // });
-                this.bg = data.regular || data.raw
-                console.log(this.bg)
-            },
-            changeCity(city) {
-                this.city = city
-                this.fetchData()
+                return data.regular || data.raw
 
+            },
+            myLocation() {
+                fetch('https://ipapi.co/json/')
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then((data)=>{
+                        
+                        this.location = {
+                            country : data.country_name ,
+                            city :  data.city ,
+                            date : Date.now() ,
+                        }
+
+                    });
             }
+            
         },
         computed : {
             background() {
-                return "background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('"+this.bg+"') ; background-size : cover ; background-position : center top ;  "
+                return `background-image : linear-gradient(160deg, #0093E930 0%, #80D0C730 100%) , url('${this.location.bg||'./img/bg1.jpg'}') ; background-size : cover ; background-position : center top ;  `
             }
         },
         
         mounted() {
+            this.myLocation()
+
+
+
+            this.fetchData(this.location.city)
+
+
             var placesAutocomplete = places({
                 appId: 'pl286R2G2FD6' ,
                 apiKey: '3b6ce17440c6809a69b5a357d8779675' ,
@@ -117,11 +139,13 @@
                     aroundLatLngViaIP: false,
             });
             placesAutocomplete.on('change', (e) => {
-                this.changeCity(e.suggestion.name)
+
+                this.fetchData(e.suggestion.name)
+
+
             });
             
 
-            this.fetchData()
 
             
 

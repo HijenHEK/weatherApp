@@ -7,7 +7,7 @@
         <title>Weather App</title>
 
        
-        
+        <link rel="icon" href="{{ asset('img/favicon.ico') }}" type="image/x-icon"/>
         <link rel="stylesheet" href="{{asset('css/app.css')}}">
     </head>
     <body >
